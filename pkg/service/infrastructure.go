@@ -63,7 +63,7 @@ func Regions() ([]string, error) {
 	return regions, nil
 }
 
-func ServiceAvailabilityPerRegion(service string, regionProgress chan<- string) (map[string]bool, error) {
+func AvailabilityPerRegion(service string, regionProgress chan<- string) (map[string]bool, error) {
 	// a map of a string to boolean
 	serviceAvailability := make(map[string]bool)
 
@@ -126,10 +126,13 @@ func Services() ([]string, error) {
 	client := ssm.NewFromConfig(cfg)
 
 	input := &ssm.GetParametersByPathInput{
-		Path: aws.String("/aws/service/global-infrastructure/regions/us-east-1/services/"),
+		// us-east-1 picked as reference region as tend to have most services, and
+		// have new services first
+		Path:       aws.String("/aws/service/global-infrastructure/regions/us-east-1/services/"),
+		MaxResults: aws.Int32(10), // ten is max
 	}
 
-	var services []string
+	services := make([]string, 400)
 
 	paginator := ssm.NewGetParametersByPathPaginator(client, input)
 	for paginator.HasMorePages() {

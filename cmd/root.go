@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"sort"
 	"time"
 
 	"github.com/briandowns/spinner"
@@ -44,16 +45,24 @@ var rootCmd = &cobra.Command{
 		}
 		regionProgressChannel := make(chan string)
 		go pollProgress(regionProgressChannel)
-		servicePerRegion, _ := service.ServiceAvailabilityPerRegion(services[idx], regionProgressChannel)
+		serviceRegions, _ := service.AvailabilityPerRegion(services[idx], regionProgressChannel)
 
 		s.Stop()
+
+		var regions []string
+		for k := range serviceRegions {
+			regions = append(regions, k)
+		}
+		sort.Strings(regions)
 
 		availabilitySign := make(map[bool]string)
 		availabilitySign[true] = "✔"
 		availabilitySign[false] = "✖"
 
-		for region, available := range servicePerRegion {
+		for _, region := range regions {
+			// for region, available := range serviceRegions {
 			c := color.New(color.FgGreen)
+			available := serviceRegions[region]
 			if !available {
 				c = color.New(color.FgRed)
 			}

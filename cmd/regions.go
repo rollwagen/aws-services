@@ -13,7 +13,7 @@ import (
 // regionsCmd represents the regions command
 var regionsCmd = &cobra.Command{
 	Use:   "regions",
-	Short: "Print a list of all regions",
+	Short: "Print all regions",
 
 	Run: func(cmd *cobra.Command, args []string) {
 		regions, _ := service.Regions()
