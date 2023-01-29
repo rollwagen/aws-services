@@ -2,27 +2,26 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/rollwagen/qrs/pkg/prompter"
-	"github.com/rollwagen/qrs/pkg/ssm"
 	"os"
 	"time"
 
 	"github.com/briandowns/spinner"
+	"github.com/fatih/color"
+	"github.com/rollwagen/qrs/pkg/prompter"
+	"github.com/rollwagen/qrs/pkg/service"
 	"github.com/spf13/cobra"
 )
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "qrs",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example: ...`,
+	Short: "Print all regions with information if selected service is available",
 	Run: func(cmd *cobra.Command, args []string) {
-		s := spinner.New(spinner.CharSets[28], 70*time.Millisecond)
+		s := spinner.New(spinner.CharSets[24], 70*time.Millisecond)
 		_ = s.Color("yellow", "bold")
 		s.Suffix = " Retrieving list of services..."
 		s.Start()
-		services, err := ssm.Services()
+		services, err := service.Services()
 		if err != nil {
 			s.Stop()
 			_, _ = fmt.Fprintln(os.Stderr, err)
@@ -35,13 +34,30 @@ examples and usage of using your application. For example: ...`,
 			_, _ = fmt.Fprintln(os.Stderr, "Aborted. Exiting.")
 			os.Exit(1)
 		}
-		s.UpdateCharSet(spinner.CharSets[24])
+
 		s.Start()
-		servicePerRegion, _ := ssm.ServiceAvailabilityPerRegion(services[idx])
+		pollProgress := func(ch <-chan string) {
+			for regionName := range ch {
+				fgYellow := color.New(color.FgYellow).SprintFunc()
+				s.Suffix = fmt.Sprintf(" Retrieving services for region %s ...", fgYellow(regionName))
+			}
+		}
+		regionProgressChannel := make(chan string)
+		go pollProgress(regionProgressChannel)
+		servicePerRegion, _ := service.ServiceAvailabilityPerRegion(services[idx], regionProgressChannel)
+
 		s.Stop()
-		// iterate over map
+
+		availabilitySign := make(map[bool]string)
+		availabilitySign[true] = "✔"
+		availabilitySign[false] = "✖"
+
 		for region, available := range servicePerRegion {
-			fmt.Printf("%s %t\n", region, available)
+			c := color.New(color.FgGreen)
+			if !available {
+				c = color.New(color.FgRed)
+			}
+			_, _ = c.Printf("%s %s\n", availabilitySign[available], region)
 		}
 	},
 }

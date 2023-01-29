@@ -1,30 +1,26 @@
-/*
-Copyright © 2023 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
 	"fmt"
-	"github.com/rollwagen/qrs/pkg/ssm"
-	"github.com/spf13/cobra"
 	"os"
+
+	"github.com/rollwagen/qrs/pkg/service"
+	"github.com/spf13/cobra"
 )
 
 // servicesCmd represents the services command
 var servicesCmd = &cobra.Command{
 	Use:   "services",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example: ...`,
+	Short: "List all services by name",
 
 	Run: func(cmd *cobra.Command, args []string) {
-		services, err := ssm.Services()
+		services, err := service.Services()
 		if err != nil {
 			_, _ = fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}
 		for _, s := range services {
-			fmt.Println(s)
+			_, _ = fmt.Fprintln(os.Stdout, s)
 		}
 	},
 }

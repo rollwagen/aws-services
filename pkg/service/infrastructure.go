@@ -1,17 +1,18 @@
-package ssm
+package service
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/service/ssm"
-	"github.com/samber/lo"
 	"net/http"
 	"os"
 	"sort"
 	"strings"
+
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/ssm"
+	"github.com/samber/lo"
 )
 
 type regionServices struct {
@@ -62,8 +63,7 @@ func Regions() ([]string, error) {
 	return regions, nil
 }
 
-func ServiceAvailabilityPerRegion(service string) (map[string]bool, error) {
-
+func ServiceAvailabilityPerRegion(service string, regionProgress chan<- string) (map[string]bool, error) {
 	// a map of a string to boolean
 	serviceAvailability := make(map[string]bool)
 
@@ -76,6 +76,8 @@ func ServiceAvailabilityPerRegion(service string) (map[string]bool, error) {
 
 	regions, _ := Regions()
 	for _, region := range regions {
+
+		regionProgress <- region // update channel which region is being processed
 
 		serviceFoundForRegion := false
 
@@ -115,10 +117,12 @@ func ServiceAvailabilityPerRegion(service string) (map[string]bool, error) {
 
 func Services() ([]string, error) {
 	ctx := context.TODO()
+
 	cfg, err := config.LoadDefaultConfig(ctx)
 	if err != nil {
 		return nil, err
 	}
+
 	client := ssm.NewFromConfig(cfg)
 
 	input := &ssm.GetParametersByPathInput{
@@ -142,7 +146,6 @@ func Services() ([]string, error) {
 	sort.Strings(services)
 
 	return services, nil
-
 }
 
 func ServiceNames() ([]string, error) {

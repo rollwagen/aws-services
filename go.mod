@@ -8,6 +8,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/config v1.18.10
 	github.com/aws/aws-sdk-go-v2/service/ssm v1.35.1
 	github.com/briandowns/spinner v1.20.0
+	github.com/fatih/color v1.14.1
 	github.com/samber/lo v1.37.0
 	github.com/spf13/cobra v1.6.1
 )
@@ -23,7 +24,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.14.0 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.18.2 // indirect
 	github.com/aws/smithy-go v1.13.5 // indirect
-	github.com/fatih/color v1.14.1 // indirect
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect

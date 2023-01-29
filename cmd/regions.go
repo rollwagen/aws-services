@@ -5,7 +5,8 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/rollwagen/qrs/pkg/ssm"
+
+	"github.com/rollwagen/qrs/pkg/service"
 	"github.com/spf13/cobra"
 )
 
@@ -16,12 +17,10 @@ var regionsCmd = &cobra.Command{
 	Long:  ``,
 
 	Run: func(cmd *cobra.Command, args []string) {
-
-		regions, _ := ssm.Regions()
+		regions, _ := service.Regions()
 		for _, region := range regions {
 			fmt.Println(region)
 		}
-
 	},
 }
 

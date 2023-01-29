@@ -1,6 +1,5 @@
 /*
 Copyright © 2023 rollwagen
-
 */
 package main
 
