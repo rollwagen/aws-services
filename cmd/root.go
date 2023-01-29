@@ -7,14 +7,14 @@ import (
 
 	"github.com/briandowns/spinner"
 	"github.com/fatih/color"
-	"github.com/rollwagen/qrs/pkg/prompter"
-	"github.com/rollwagen/qrs/pkg/service"
+	"github.com/rollwagen/aws-services/pkg/prompter"
+	"github.com/rollwagen/aws-services/pkg/service"
 	"github.com/spf13/cobra"
 )
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "qrs",
+	Use:   "aws-services",
 	Short: "Print all regions with information if selected service is available",
 	Run: func(cmd *cobra.Command, args []string) {
 		s := spinner.New(spinner.CharSets[24], 70*time.Millisecond)

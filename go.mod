@@ -1,4 +1,4 @@
-module github.com/rollwagen/qrs
+module github.com/rollwagen/aws-services
 
 go 1.19
 

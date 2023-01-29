@@ -6,7 +6,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/rollwagen/qrs/pkg/service"
+	"github.com/rollwagen/aws-services/pkg/service"
 	"github.com/spf13/cobra"
 )
 
