@@ -8,11 +8,13 @@ import (
 	"os"
 	"sort"
 	"strings"
+	"sync"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
 	"github.com/samber/lo"
+	"github.com/sourcegraph/conc/pool"
 )
 
 type regionServices struct {
@@ -64,66 +66,70 @@ func Regions() ([]string, error) {
 }
 
 func AvailabilityPerRegion(service string, regionProgress chan<- string) (map[string]bool, error) {
-	// a map of a string to boolean
-	serviceAvailability := make(map[string]bool)
+	// a map of a string (region) to boolean (available true/false)
+	serviceAvailability := sync.Map{}
 
-	ctx := context.TODO()
-	cfg, err := config.LoadDefaultConfig(ctx)
-	if err != nil {
-		return nil, err
-	}
-	client := ssm.NewFromConfig(cfg)
+	p := pool.New().WithMaxGoroutines(3)
 
 	regions, _ := Regions()
 	for _, region := range regions {
 
 		regionProgress <- region // update channel which region is being processed
 
-		serviceFoundForRegion := false
-
-		path := fmt.Sprintf("/aws/service/global-infrastructure/regions/%s/services/", region)
-
-		input := &ssm.GetParametersByPathInput{
-			Path: aws.String(path),
-		}
-
-		paginator := ssm.NewGetParametersByPathPaginator(client, input)
-		for paginator.HasMorePages() {
-			output, err := paginator.NextPage(ctx)
-			if err != nil {
-				return nil, err
-			}
-			for _, p := range output.Parameters {
-				name := *p.Name
-				s := name[strings.LastIndex(name, "/")+1:]
-
-				if service == s {
-					serviceAvailability[region] = true
-					serviceFoundForRegion = true
-					break
-				}
-			}
-			if serviceFoundForRegion {
-				break
-			}
-		}
-		if serviceFoundForRegion {
-			continue
-		}
-		serviceAvailability[region] = false
+		p.Go(func() {
+			isAvailable(region, service, &serviceAvailability)
+		})
 	}
-	return serviceAvailability, nil
+	p.Wait()
+
+	m := make(map[string]bool)
+	serviceAvailability.Range(func(k any, v any) bool { m[k.(string)] = v.(bool); return true })
+
+	return m, nil
+}
+
+func isAvailable(region string, service string, availability *sync.Map) {
+	ctx := context.Background()
+	cfg, err := config.LoadDefaultConfig(ctx)
+	if err != nil {
+		panic(err)
+	}
+	client := ssm.NewFromConfig(cfg)
+
+	path := fmt.Sprintf("/aws/service/global-infrastructure/regions/%s/services/", region)
+
+	input := &ssm.GetParametersByPathInput{
+		Path: aws.String(path),
+	}
+
+	paginator := ssm.NewGetParametersByPathPaginator(client, input)
+	for paginator.HasMorePages() {
+		output, err := paginator.NextPage(ctx)
+		if err != nil {
+			panic(err)
+		}
+		for _, p := range output.Parameters {
+			name := *p.Name
+			s := name[strings.LastIndex(name, "/")+1:]
+
+			if service == s {
+				availability.Store(region, true)
+				return
+			}
+		}
+	}
+	availability.Store(region, false)
 }
 
 func Services() ([]string, error) {
-	ctx := context.TODO()
+	ctx := context.Background()
 
 	cfg, err := config.LoadDefaultConfig(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	client := ssm.NewFromConfig(cfg)
+	ssmClient := ssm.NewFromConfig(cfg)
 
 	input := &ssm.GetParametersByPathInput{
 		// us-east-1 picked as reference region as tend to have most services, and
@@ -132,9 +138,9 @@ func Services() ([]string, error) {
 		MaxResults: aws.Int32(10), // ten is max
 	}
 
-	services := make([]string, 400)
+	var services []string
 
-	paginator := ssm.NewGetParametersByPathPaginator(client, input)
+	paginator := ssm.NewGetParametersByPathPaginator(ssmClient, input)
 	for paginator.HasMorePages() {
 		output, err := paginator.NextPage(ctx)
 		if err != nil {
@@ -142,7 +148,8 @@ func Services() ([]string, error) {
 		}
 		for _, p := range output.Parameters {
 			name := *p.Name
-			services = append(services, name[strings.LastIndex(name, "/")+1:])
+			serviceName := name[strings.LastIndex(name, "/")+1:]
+			services = append(services, serviceName)
 		}
 	}
 
@@ -151,7 +158,7 @@ func Services() ([]string, error) {
 	return services, nil
 }
 
-func ServiceNames() ([]string, error) {
+func Names() ([]string, error) {
 	resp, err := http.Get("https://api.regional-table.region-services.aws.a2z.com/index.json")
 	if err != nil {
 		_, _ = fmt.Fprintln(os.Stderr, err)
