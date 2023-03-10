@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/briandowns/spinner"
+
 	"github.com/fatih/color"
 	"github.com/rollwagen/aws-services/pkg/prompter"
 	"github.com/rollwagen/aws-services/pkg/service"
@@ -29,14 +30,16 @@ var rootCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		s.Stop()
-		p := prompter.New()
-		idx, err := p.Select("Select service to query", "", services)
+
+		prompt := prompter.New()
+		idx, err := prompt.Select("Select service to query", "", services)
 		if err != nil {
 			_, _ = fmt.Fprintln(os.Stderr, "Aborted. Exiting.")
 			os.Exit(1)
 		}
 
 		s.Start()
+
 		pollProgress := func(ch <-chan string) {
 			for regionName := range ch {
 				fgYellow := color.New(color.FgYellow).SprintFunc()
