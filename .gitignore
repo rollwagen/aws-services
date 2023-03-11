@@ -2,6 +2,9 @@
 main
 regional-table.json
 
+completions
+dist
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
