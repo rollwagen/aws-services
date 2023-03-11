@@ -23,6 +23,7 @@ var rootCmd = &cobra.Command{
 		_ = s.Color("yellow", "bold")
 		s.Suffix = " Retrieving list of services..."
 		s.Start()
+
 		services, err := service.Services()
 		if err != nil {
 			s.Stop()
@@ -39,11 +40,12 @@ var rootCmd = &cobra.Command{
 		}
 
 		s.Start()
+		startTime := time.Now()
 
 		pollProgress := func(ch <-chan string) {
 			for regionName := range ch {
 				fgYellow := color.New(color.FgYellow).SprintFunc()
-				s.Suffix = fmt.Sprintf(" Retrieving services for region %s ...", fgYellow(regionName))
+				s.Suffix = fmt.Sprintf(" [%ds] Retrieving services for region %s ... ", int(time.Since(startTime).Seconds()), fgYellow(regionName))
 			}
 		}
 		regionProgressChannel := make(chan string)
