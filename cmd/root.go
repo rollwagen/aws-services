@@ -43,9 +43,14 @@ var rootCmd = &cobra.Command{
 		startTime := time.Now()
 
 		pollProgress := func(ch <-chan string) {
+			const sleepIntervalInMilliseconds = 10
 			for regionName := range ch {
 				fgYellow := color.New(color.FgYellow).SprintFunc()
-				s.Suffix = fmt.Sprintf(" [%ds] Retrieving services for region %s ... ", int(time.Since(startTime).Seconds()), fgYellow(regionName))
+				s.Suffix = fmt.Sprintf(" [%ds] Retrieving services for region %s ... ",
+					int(time.Since(startTime).Seconds()),
+					fgYellow(regionName),
+				)
+				time.Sleep(sleepIntervalInMilliseconds * time.Millisecond)
 			}
 		}
 		regionProgressChannel := make(chan string)
@@ -79,8 +84,7 @@ var rootCmd = &cobra.Command{
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
-	err := rootCmd.Execute()
-	if err != nil {
+	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
 }

@@ -1,6 +1,3 @@
-/*
-Copyright © 2023 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
@@ -10,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// regionsCmd represents the regions command
+// regionsCmd represents the regions command.
 var regionsCmd = &cobra.Command{
 	Use:   "regions",
 	Short: "Print all regions",

@@ -35,11 +35,13 @@ type regionServices struct {
 }
 
 func Regions() ([]string, error) {
-	ctx := context.TODO()
+	ctx := context.Background()
+
 	cfg, err := config.LoadDefaultConfig(ctx)
 	if err != nil {
 		return nil, err
 	}
+
 	client := ssm.NewFromConfig(cfg)
 
 	input := &ssm.GetParametersByPathInput{
@@ -54,6 +56,7 @@ func Regions() ([]string, error) {
 		if err != nil {
 			return nil, err
 		}
+
 		for _, p := range output.Parameters {
 			name := *p.Name
 			regions = append(regions, name[strings.LastIndex(name, "/")+1:])
@@ -69,25 +72,29 @@ func AvailabilityPerRegion(service string, regionProgress chan<- string) (map[st
 	// a map of a string (region) to boolean (available true/false)
 	serviceAvailability := sync.Map{}
 
-	p := pool.New().WithMaxGoroutines(3)
+	const concurrency = 3
+	concurrencyPool := pool.New().WithMaxGoroutines(concurrency)
 
 	regions, _ := Regions()
-	for _, region := range regions {
+	for _, r := range regions {
+		region := r
 
 		regionProgress <- region // update channel which region is being processed
 
-		p.Go(func() {
+		concurrencyPool.Go(func() {
 			isAvailable(region, service, &serviceAvailability)
 		})
 	}
-	p.Wait()
 
-	m := make(map[string]bool)
+	concurrencyPool.Wait()
+
+	m := make(map[string]bool) // map string (region) -> boolean (available true/false)
 	serviceAvailability.Range(func(k any, v any) bool { m[k.(string)] = v.(bool); return true })
 
 	return m, nil
 }
 
+// isAvailable check if service is available in region, and updates the given availability map
 func isAvailable(region string, service string, availability *sync.Map) {
 	ctx := context.Background()
 	cfg, err := config.LoadDefaultConfig(ctx)
@@ -167,15 +174,18 @@ func Names() ([]string, error) {
 	defer resp.Body.Close()
 
 	var rs regionServices
+
 	err = json.NewDecoder(resp.Body).Decode(&rs)
 	if err != nil {
 		_, _ = fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+		return nil, err
 	}
 
 	var services []string
+
 	for _, p := range rs.Prices {
 		serviceName := p.Attributes.AwsServiceName
+
 		present := lo.Contains[string](services, serviceName)
 		if !present {
 			services = append(services, serviceName)
@@ -183,5 +193,6 @@ func Names() ([]string, error) {
 	}
 
 	sort.Strings(services)
+
 	return services, nil
 }
