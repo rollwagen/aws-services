@@ -18,7 +18,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "aws-services",
 	Short: "Print all regions with information if selected service is available",
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		s := spinner.New(spinner.CharSets[24], 70*time.Millisecond)
 		_ = s.Color("yellow", "bold")
 		s.Suffix = " Retrieving list of services..."

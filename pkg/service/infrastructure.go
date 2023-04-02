@@ -139,8 +139,7 @@ func Services() ([]string, error) {
 	ssmClient := ssm.NewFromConfig(cfg)
 
 	input := &ssm.GetParametersByPathInput{
-		// us-east-1 picked as reference region as tend to have most services, and
-		// have new services first
+		// use us-east-1 as ref region as tends to have most services + have new services first
 		Path:       aws.String("/aws/service/global-infrastructure/regions/us-east-1/services/"),
 		MaxResults: aws.Int32(10), // ten is max
 	}
@@ -151,7 +150,7 @@ func Services() ([]string, error) {
 	for paginator.HasMorePages() {
 		output, err := paginator.NextPage(ctx)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("counld not retrieive params from SSM; validate AWS credentials/token: %w", err)
 		}
 		for _, p := range output.Parameters {
 			name := *p.Name
