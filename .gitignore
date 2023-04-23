@@ -1,6 +1,7 @@
 
 main
 regional-table.json
+aws-services
 
 completions
 dist
