@@ -1,6 +1,7 @@
 # aws-services
 
 [![GitHub Release](https://img.shields.io/github/release/rollwagen/aws-services.svg)](https://github.com/rollwagen/aws-services/releases)
+![Downloads](https://img.shields.io/github/downloads/rollwagen/aws-services/total)
 [![Go Reference](https://pkg.go.dev/badge/github.com/rollwagen/aws-services.svg)](https://pkg.go.dev/github.com/rollwagen/aws-services)
 [![Go Report Card](https://goreportcard.com/badge/github.com/rollwagen/aws-services)](https://goreportcard.com/report/github.com/rollwagen/aws-services)
 ![CodeQL](https://github.com/rollwagen/aws-services/workflows/CodeQL/badge.svg)
