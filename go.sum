@@ -2,8 +2,9 @@ github.com/AlecAivazis/survey/v2 v2.3.7 h1:6I/u8FvytdGsgonrYsVn2t8t4QiRnh6QSTqkk
 github.com/AlecAivazis/survey/v2 v2.3.7/go.mod h1:xUTIdE4KCOIjsBAE1JYsUPoCqYdZ1reCfTwbto0Fduo=
 github.com/Netflix/go-expect v0.0.0-20220104043353-73e0943537d2 h1:+vx7roKuyA63nhn5WAunQHLTznkw5W8b1Xc0dNjp83s=
 github.com/Netflix/go-expect v0.0.0-20220104043353-73e0943537d2/go.mod h1:HBCaDeC1lPdgDeDbhX8XFpy1jqjK0IBG8W5K+xYqA0w=
-github.com/aws/aws-sdk-go-v2 v1.20.0 h1:INUDpYLt4oiPOJl0XwZDK2OVAVf0Rzo+MGVTv9f+gy8=
 github.com/aws/aws-sdk-go-v2 v1.20.0/go.mod h1:uWOr0m0jDsiWw8nnXiqZ+YG6LdvAlGYDLLf2NmHZoy4=
+github.com/aws/aws-sdk-go-v2 v1.20.1 h1:rZBf5DWr7YGrnlTK4kgDQGn1ltqOg5orCYb/UhOFZkg=
+github.com/aws/aws-sdk-go-v2 v1.20.1/go.mod h1:NU06lETsFm8fUC6ZjhgDpVBcGZTFQ6XM+LZWZxMI4ac=
 github.com/aws/aws-sdk-go-v2/config v1.18.32 h1:tqEOvkbTxwEV7hToRcJ1xZRjcATqwDVsWbAscgRKyNI=
 github.com/aws/aws-sdk-go-v2/config v1.18.32/go.mod h1:U3ZF0fQRRA4gnbn9GGvOWLoT2EzzZfAWeKwnVrm1rDc=
 github.com/aws/aws-sdk-go-v2/credentials v1.13.31 h1:vJyON3lG7R8VOErpJJBclBADiWTwzcwdkQpTKx8D2sk=
@@ -26,8 +27,9 @@ github.com/aws/aws-sdk-go-v2/service/ssooidc v1.15.1 h1:hd0SKLMdOL/Sl6Z0np1PX9Le
 github.com/aws/aws-sdk-go-v2/service/ssooidc v1.15.1/go.mod h1:XO/VcyoQ8nKyKfFW/3DMsRQXsfh/052tHTWmg3xBXRg=
 github.com/aws/aws-sdk-go-v2/service/sts v1.21.1 h1:pAOJj+80tC8sPVgSDHzMYD6KLWsaLQ1kZw31PTeORbs=
 github.com/aws/aws-sdk-go-v2/service/sts v1.21.1/go.mod h1:G8SbvL0rFk4WOJroU8tKBczhsbhj2p/YY7qeJezJ3CI=
-github.com/aws/smithy-go v1.14.0 h1:+X90sB94fizKjDmwb4vyl2cTTPXTE5E2G/1mjByb0io=
 github.com/aws/smithy-go v1.14.0/go.mod h1:Tg+OJXh4MB2R/uN61Ko2f6hTZwB/ZYGOtib8J3gBHzA=
+github.com/aws/smithy-go v1.14.1 h1:EFKMUmH/iHMqLiwoEDx2rRjRQpI1YCn5jTysoaDujFs=
+github.com/aws/smithy-go v1.14.1/go.mod h1:Tg+OJXh4MB2R/uN61Ko2f6hTZwB/ZYGOtib8J3gBHzA=
 github.com/briandowns/spinner v1.23.0 h1:alDF2guRWqa/FOZZYWjlMIx2L6H0wyewPxo/CH4Pt2A=
 github.com/briandowns/spinner v1.23.0/go.mod h1:rPG4gmXeN3wQV/TsAY4w8lPdIM6RX3yqeBQJSrbXjuE=
 github.com/cpuguy83/go-md2man/v2 v2.0.2/go.mod h1:tgQtvFlXSQOSOSIRvRPT7W67SCa46tRHOmNcaadrF8o=
