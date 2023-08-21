@@ -23,3 +23,5 @@ dist
 # vendor/
 
 .DS_Store
+
+.trunk
