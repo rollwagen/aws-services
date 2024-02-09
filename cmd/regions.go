@@ -12,7 +12,7 @@ var regionsCmd = &cobra.Command{
 	Use:   "regions",
 	Short: "Print all regions",
 
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		regions, _ := service.Regions()
 		for _, region := range regions {
 			fmt.Println(region)
