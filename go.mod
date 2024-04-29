@@ -6,7 +6,7 @@ require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
 	github.com/aws/aws-sdk-go-v2 v1.26.1
 	github.com/aws/aws-sdk-go-v2/config v1.27.10
-	github.com/aws/aws-sdk-go-v2/service/ssm v1.49.5
+	github.com/aws/aws-sdk-go-v2/service/ssm v1.50.0
 	github.com/briandowns/spinner v1.23.0
 	github.com/fatih/color v1.16.0
 	github.com/samber/lo v1.39.0
