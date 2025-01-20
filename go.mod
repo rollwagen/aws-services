@@ -7,7 +7,7 @@ require (
 	github.com/aws/aws-sdk-go-v2 v1.32.6
 	github.com/aws/aws-sdk-go-v2/config v1.28.1
 	github.com/aws/aws-sdk-go-v2/service/ssm v1.56.1
-	github.com/briandowns/spinner v1.23.1
+	github.com/briandowns/spinner v1.23.2
 	github.com/fatih/color v1.18.0
 	github.com/samber/lo v1.39.0
 	github.com/sourcegraph/conc v0.3.0
