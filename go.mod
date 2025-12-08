@@ -13,7 +13,7 @@ require (
 	github.com/fatih/color v1.18.0
 	github.com/samber/lo v1.52.0
 	github.com/sourcegraph/conc v0.3.0
-	github.com/spf13/cobra v1.10.1
+	github.com/spf13/cobra v1.10.2
 )
 
 require (
