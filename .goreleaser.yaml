@@ -42,7 +42,7 @@ signs:
       - --key=assets/cosign/cosign.key
       - --output-signature=${signature}
       - --yes
-      - --bundle
+      - --bundle=${signature}.bundle
       - ${artifact}
     artifacts: checksum
 
